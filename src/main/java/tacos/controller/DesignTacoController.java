@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class DesignTacoController {
     }
 
     @PostMapping
-    public String processTaco(Taco taco, @ModelAttribute TacoOrder tacoOrder) {
+    public String processTaco(Taco taco, TacoOrder tacoOrder) {
         tacoOrder.addTaco(taco);
         log.info("Processing taco: {}", taco);
 
@@ -41,12 +43,12 @@ public class DesignTacoController {
     }
 
     @ModelAttribute(name = "tacoOrder")
-    public TacoOrder order() {
+    public TacoOrder order(Model model) {
         return new TacoOrder();
     }
 
     @ModelAttribute(name = "taco")
-    public Taco taco() {
+    public Taco taco(Model model) {
         return new Taco();
     }
 
