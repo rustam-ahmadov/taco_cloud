@@ -1,0 +1,10 @@
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    url: jdbc::postgresql//localhost:5432/taco_cloud
+    generate-unique-name: false
+    name: taco_cloud
+    username : postgres
+    password : Azerbaycan1234
+    driver-class-name: org.postgresql.Driver
