@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,8 @@ import tacos.entity.Ingredient;
 import tacos.entity.Ingredient.Type;
 import tacos.entity.Taco;
 import tacos.entity.TacoOrder;
+import tacos.repository.abstraction.IngredientRepository;
+import tacos.repository.implementation.JdbcIngredientRepository;
 
 
 /*@Slf4j a Lombok-provided annotation that, at compilation time,
@@ -32,11 +35,15 @@ import tacos.entity.TacoOrder;
 @RequestMapping(path = "/design")
 @SessionAttributes("tacoOrder")
 public class DesignTacoController {
+    private final IngredientRepository ingredientRepository;
+    @Autowired
+    public DesignTacoController(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
     @GetMapping
     public String showDesignForm() {
         return "design";
     }
-
     @PostMapping
     public String processTaco(@Valid Taco taco, Errors errors, TacoOrder tacoOrder) {
 
@@ -51,46 +58,26 @@ public class DesignTacoController {
 
         return "redirect:/orders/current";
     }
-
     @ModelAttribute(name = "tacoOrder")
     public TacoOrder order(Model model) {
         return new TacoOrder();
     }
-
     @ModelAttribute(name = "taco")
     public Taco taco(Model model) {
         return new Taco();
     }
-
     @ModelAttribute
     public void addIngredientsToModel(Model model) {
-        List<Ingredient> ingredients = Arrays.asList(
-                new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
-                new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
+        Iterable<Ingredient> ingredients = ingredientRepository.findAll();
 
-                new Ingredient("GRBF", "Ground Beef", Type.PROTEIN),
-                new Ingredient("CARN", "Carnitas", Type.PROTEIN),
-
-                new Ingredient("TMTO", "Diced Tomatoes", Type.VEGGIES),
-                new Ingredient("LETC", "Lettuce", Type.VEGGIES),
-
-                new Ingredient("CHED", "Cheddar", Type.CHEESE),
-                new Ingredient("JACK", "Monterrey Jack", Type.CHEESE),
-
-                new Ingredient("SLSA", "Salsa", Type.SAUCE),
-                new Ingredient("SRCR", "Sour Cream", Type.SAUCE)
-        );
-
-        /*Arrays.stream(Type.values())
-                .forEach(type -> model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type)));*/
-
-        //Or this type of code...
         Type[] types = Type.values();
         for (Type type : types) {
-            model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
+            model.addAttribute(type.toString().toLowerCase(), filterByType((List<Ingredient>) ingredients, type));
         }
+        //Or this type of code...
+        /*Arrays.stream(Type.values())
+                .forEach(type -> model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type)));*/
     }
-
     private Iterable<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
         return ingredients
                 .stream()
