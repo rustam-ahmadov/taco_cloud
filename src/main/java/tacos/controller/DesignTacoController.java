@@ -48,7 +48,7 @@ public class DesignTacoController {
                 log.error("Validation error: "+ fieldError.getField());
             return "design";
         }
-
+        taco.setTacoOrder(tacoOrder);
         tacoOrder.addTaco(taco);
         log.info("Processing taco: {}", taco);
 

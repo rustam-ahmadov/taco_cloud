@@ -1,12 +1,12 @@
 package tacos.entity;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,11 +15,15 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Table
+@Entity
 public class TacoOrder implements Serializable {
     @Serial
     private static final long serialVersionUID = -6240414050420885031L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "tacoOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Taco> tacos = new ArrayList<>();
     @NotBlank(message = "Delivery name is required")
     private String deliveryName;
     @NotBlank(message = "Street is required")
@@ -27,7 +31,7 @@ public class TacoOrder implements Serializable {
     @NotBlank(message = "City is required")
     private String deliveryCity;
     @NotBlank(message = "State is required")
-    @Size(min = 1,max = 2)
+    @Size(min = 1, max = 2)
     private String deliveryState;
     @NotBlank(message = "Zip code is required")
     private String deliveryZip;
@@ -41,9 +45,10 @@ public class TacoOrder implements Serializable {
             message = "Must be formatted MM/YY")
     private String ccExpiration;
     @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
+    @Column(name = "cc_cvv")
     private String ccCVV;
-    private Date placedAt;
-    private List<Taco> tacos = new ArrayList<>();
+    private Date placedAt = new Date();
+
 
     public void addTaco(Taco taco) {
         this.tacos.add(taco);

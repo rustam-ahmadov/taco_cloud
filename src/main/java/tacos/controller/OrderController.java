@@ -20,19 +20,15 @@ import tacos.repository.OrderRepository;
 @RequestMapping("/orders")
 @SessionAttributes("tacoOrder")
 public class OrderController {
-
     private final OrderRepository orderRepository;
-
     @Autowired
     public OrderController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
-
     @GetMapping("/current")
     public String orderForm() {
         return "orderForm";
     }
-
     @PostMapping
     public String processOrder(@Valid TacoOrder order, Errors errors, SessionStatus sessionStatus) {
 
