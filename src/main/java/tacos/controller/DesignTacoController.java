@@ -1,15 +1,12 @@
 package tacos.controller;
 
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -21,8 +18,7 @@ import tacos.entity.Ingredient;
 import tacos.entity.Ingredient.Type;
 import tacos.entity.Taco;
 import tacos.entity.TacoOrder;
-import tacos.repository.abstraction.IngredientRepository;
-import tacos.repository.implementation.JdbcIngredientRepository;
+import tacos.repository.IngredientRepository;
 
 
 /*@Slf4j a Lombok-provided annotation that, at compilation time,
