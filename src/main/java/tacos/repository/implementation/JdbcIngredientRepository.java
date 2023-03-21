@@ -34,9 +34,9 @@ public class JdbcIngredientRepository implements IngredientRepository {
                 this::mapRowToIngredient,
                 id
         );
-        return results.stream().filter(
-                r -> r.getId().equals(id)
-        ).findFirst();
+        return results.stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst();
     }
 
     @Override
